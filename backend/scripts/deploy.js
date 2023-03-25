@@ -1,4 +1,5 @@
 const hre = require("hardhat");
+const { CRYPTODEVS_NFT_CONTRACT_ADDRESS } = require("../constants");
 
 //* How to change this file
 /*
@@ -29,6 +30,11 @@ ex : Asssume you have a string and a number to pass
 
 async function main() {
   // Write your deployment files here
+  const FakeNFTMarketplace = await ethers.getContractFactory(
+    "FakeNFTMarketplace"
+  );
+  const fakeNFTMarketplace = await FakeNFTMarketplace.deploy();
+  await fakeNFTMarketplace.deployed();
 }
 
 // Async Sleep function

@@ -143,13 +143,14 @@ function executeProposal(uint256 proposalIndex)
     }
 
 
- function withdrawEther() external onlyOwner {
+ function withdrawEther() external onlyOwner
+  {
     uint256 amount = address(this).balance;
     require(amount > 0, "NOTHING TO WITHDRAW, CONTRACT BALANCE IS EMPTY");
     (bool sent, ) = payable(owner()).call{value: amount} ("");
-    require(sent, "FAILED_TO_WITHDRAW_ETHER")
-}
+    require(sent, "FAILED_TO_WITHDRAW_ETHER");
 
+}
 
 receive() external payable {}
 
