@@ -35,6 +35,28 @@ async function main() {
   );
   const fakeNFTMarketplace = await FakeNFTMarketplace.deploy();
   await fakeNFTMarketplace.deployed();
+
+  console.log("FakeNFTMarketplace deployed to: ", FakeNftMarketplace.address);
+
+
+  // Now deploy the CryptoDevsDAO contract
+  const CryptoDevsDAO = await ethers.getContractFactory("CryptoDevsDAO");
+  const cryptoDevsDAO = await CryptoDevsDAO.deploy(
+    FakeNftMarketplace.address,
+    CRYPTODEVS_NFT_CONTRACT_ADDRESS,
+    {
+      // This assumes your metamask account has at least 1 ETH in its account
+      // Change this value as you want
+      value: ethers.utils.parseEther("1"),
+    }
+  );
+  await cryptoDevsDAO.deployed();
+
+  console.log("CryptoDevsDAO deployed to: ", cryptoDevsDAO.address);
+
+
+
+
 }
 
 // Async Sleep function
