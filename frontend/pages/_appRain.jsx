@@ -24,7 +24,7 @@ import { publicProvider } from "wagmi/providers/public";
 
 // Setting Chains
 const { chains, provider } = configureChains(
-  [chain.goerli],
+  [chain.sepolia],
   [publicProvider()]
 );
 
