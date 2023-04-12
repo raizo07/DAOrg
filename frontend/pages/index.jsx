@@ -32,6 +32,32 @@ const [walletConnected, setWalletConnected] = useState(false);
 const [isOwner, setIsOwner] = useState(false);
 const Web3ModalRef = useRef();
 
+// Helper function to connect wallet
+const connectWallet = async () => {
+  try {
+    await getProviderOrSigner();
+    setWalletConnected(true);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getDAOOwner = async () => {
+  try {
+    const signer = await getProviderOrSigner(true);
+    const contract = getDAOContractInstance(signer);
+
+    const _owner = await contract.owner();
+
+    const address = await signer.getAddress();
+    if (address.toLowerCase() === _owner.toLowercase()) {
+      setIsOwner(true);
+    }
+
+  } catch (err) {
+    console.error(err.message);
+  }
+};
 
 
 
