@@ -57,9 +57,37 @@ const getDAOOwner = async () => {
   } catch (err) {
     console.error(err.message);
   }
+
 };
 
 
+const withdrawDAOEther = async () => {
+  try {
+    const signer = await getProviderOrSigner(true);
+    const contract = getDAOContractInstance(signer);
+
+    const tx = await contract.withdrawEther();
+    setLoading(true);
+    await tx.await();
+    setLoading(false);
+    getDAOTreasuryBalance();
+  } catch (err) {
+    console.error(err);
+    window.alert(err.reason);
+  }
+};
+
+const getDAOTreasuryBalance = async () => {
+  try {
+    const provider = await getProviderOrSigner();
+    const balance = await provider.getBalance(
+      CRYPTODEVS_DAO_CONTRACT_ADDRESS
+    );
+    setTreasuryBalance(balance.toString());
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 
 
