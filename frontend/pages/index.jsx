@@ -89,6 +89,32 @@ const getDAOTreasuryBalance = async () => {
   }
 };
 
+// Reads the number of proposals in the DAO contract and sets the `numProposals` state variable 
+const getNumProposalsInDAO = async () => {
+  try {
+    const provider = getProviderOrSigner();
+    const contract = getDAOContractInstance(provider);
+    const daoNumberProposals = await contract.numProposals();
+    setNumProposals(daoNumberProposals.toString());
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
+// Reads the balance of the user's CryptoDevs NFTs and sets the `nftBalance` state variable
+const getUserNFTBalance = async () => {
+  try {
+    const signer = getProviderOrSigner(true);
+    const nftContract = getCryptodevsNFTContractInstance(signer);
+    const balance = await nftContract.balanceOf(signer.getAddress());
+    setNftBalance(parseInt(balance.toString()));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 
 
 
