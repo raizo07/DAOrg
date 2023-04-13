@@ -114,6 +114,42 @@ const getUserNFTBalance = async () => {
   }
 };
 
+// Calls the `createProposal` function in the contract, using the tokenId from `fakeNftTokenId`
+const createProposal = async () => {
+  try {
+    const signer = await getProviderOrSigner(true);
+    const daoContract = getDaoContractInstance(signer);
+    const txn = await daoContract.createProposal(fakeNftTokenId);
+    setLoading(true);
+    await txn.wait();
+    await getNumProposalsInDAO();
+    setLoading(false);
+  } catch (error) {
+    console.error(error);
+    windows,alert(error.reason);
+  }
+};
+
+
+const fetchProposalById = async (id) => {
+  try {
+    const provider = await getProviderOrSigner();
+    const daoContract = getDaoContractInstance(provider);
+    const proposal = await daoContract.proposals(id);
+    const parsedProposal = {
+      proposalId: id,
+      nftTokenId: proposal.nftTokenId.toString(),
+      deadline: new Date(parseInt(proposal.deadline.toString()) * 1000),
+      yayVotes: proposal.yayVotes.toString(),
+      nayVotes: proposal.nayVotes.toString(),
+      executed: proposal.executed,
+    };
+     return parsedProposal;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 
 
