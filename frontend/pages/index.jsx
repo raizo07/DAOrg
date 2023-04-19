@@ -187,11 +187,114 @@ const voteOnProposal = async (proposalId, _vote) => {
   }
 };
 
+// Calls the `executeProposal` function in the contract, using
+  // the passed proposal ID
+
+  const executeProposal = async (proposalId) => {
+    try {
+      const signer = await getProviderOrSigner(true);
+      const daoContract = getDaoContractInstance(signer);
+      const txn = await daoContract.executeProposal(proposalId);
+      setLoading(true);
+      await txn.wait(true);
+      setLoading(false);
+      await fetchAllProposals();
+      getDAOTreasuryBalance();
+    } catch (error) {
+      console.error(error);
+      window.alert(error.reason);
+    }
+  };
+
+// Helper function to fetch a Provider/Signer instance from Metamask
+const getProviderOrSigner = async (needSigner = false) => {
+  const provider = await Web3ModalRef.current.connect();
+  const web3Provider = new providers.Web3Provider(provider);
+
+  const { chainId } = new providers.Web3Provider.getNetwork();
+  if (chainId !==5) {
+    window.alert("Please switch to the Sepolia network");
+    throw new Error("Please switch to the Goerli network");
+  }
+   
+  if (needSigner) {
+    const signer = web3Provider.getSigner();
+    return signer;
+  }
+  return web3Provider;
+};
+
+
+const getDaoContractInstance = (providerOrSigner) => {
+  return new Contract(
+    CRYPTODEVS_DAO_CONTRACT_ADDRESS,
+    CRYPTODEVS_DAO_ABI,
+    providerOrSigner
+  );
+};
+
+
+const getCryptodevsNFTContractInstance = (providerOrSigner) => {
+  return new Contract(
+    CRYPTODEVS_NFT_CONTRACT_ADDRESS,
+    CRYPTODEVS_NFT_ABI,
+    providerOrSigner
+  );
+};
+
+// piece of code that runs everytime the value of `walletConnected` changes
+  // so when a wallet connects or disconnects
+  // Prompts user to connect wallet if not connected
+  // and then calls helper functions to fetch the
+  // DAO Treasury Balance, User NFT Balance, and Number of Proposals in the DAO
+
+useEffect(() => {
+  if (!walletConnected) {
+    Web3ModalRef.current = new Web3Modal ({
+      network: "sepolia",
+      providerOptions: {},
+      disableInjectedProvider: false,
+    });
+
+    connectWallet().then(() => {
+      getDAOTreasuryBalance();
+      getUserNFTBalance();
+      getNumProposalsInDAO();
+      getDAOOwner();
+    });
+  }
+}, [walletConnected]);
 
 
 
 
+useEffect(() => {
+  if (selectedTab === "View Proposals") {
+    fetchAllProposals();
+  }
+}, [selectedTab]);
 
+// Render the contents of the appropriate tab based on `selectedTab`
+function renderTabs() {
+  if (selectedTab === "Create Proposal") {
+    return renderCreateProposalTab();
+  } else if (selectedTab === "View Proposals") {
+    return renderViewProposalsTab();
+  }
+  return null;
+}
+
+// Renders the 'Create Proposal Tab'
+function renderCreateProposalTab() {
+  if (loading) {
+    return (
+      <div className="{styles.description}">
+        "You do not own any Crypto devs NFT" <br/>
+
+      </div>
+    )
+  }
+}
 
 
 
