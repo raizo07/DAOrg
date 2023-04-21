@@ -126,7 +126,7 @@ const createProposal = async () => {
     setLoading(false);
   } catch (error) {
     console.error(error);
-    windows,alert(error.reason);
+    window.alert(error.reason);
   }
 };
 
@@ -211,11 +211,11 @@ const getProviderOrSigner = async (needSigner = false) => {
   const provider = await Web3ModalRef.current.connect();
   const web3Provider = new providers.Web3Provider(provider);
 
-  const { chainId } = new providers.Web3Provider.getNetwork();
-  if (chainId !==5) {
-    window.alert("Please switch to the Sepolia network");
-    throw new Error("Please switch to the Goerli network");
-  }
+  const { chainId } = await web3Provider.getNetwork();
+  // if (chainId !==5) {
+  //   window.alert("Please switch to the Sepolia network!");
+  //   throw new Error("Please switch to the Sepolia network");
+  // }
    
   if (needSigner) {
     const signer = web3Provider.getSigner();
