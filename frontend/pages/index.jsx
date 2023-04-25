@@ -45,12 +45,12 @@ const connectWallet = async () => {
 const getDAOOwner = async () => {
   try {
     const signer = await getProviderOrSigner(true);
-    const contract = getDAOContractInstance(signer);
+    const contract = getDaoContractInstance(signer);
 
     const _owner = await contract.owner();
 
     const address = await signer.getAddress();
-    if (address.toLowerCase() === _owner.toLowercase()) {
+    if (address.toLowerCase() === _owner.toLowerCase()) {
       setIsOwner(true);
     }
 
@@ -64,11 +64,11 @@ const getDAOOwner = async () => {
 const withdrawDAOEther = async () => {
   try {
     const signer = await getProviderOrSigner(true);
-    const contract = getDAOContractInstance(signer);
+    const contract = getDaoContractInstance(signer);
 
     const tx = await contract.withdrawEther();
     setLoading(true);
-    await tx.await();
+    await tx.wait();
     setLoading(false);
     getDAOTreasuryBalance();
   } catch (err) {
@@ -93,9 +93,9 @@ const getDAOTreasuryBalance = async () => {
 const getNumProposalsInDAO = async () => {
   try {
     const provider = getProviderOrSigner();
-    const contract = getDAOContractInstance(provider);
+    const contract = getDaoContractInstance(provider);
     const daoNumberProposals = await contract.numProposals();
-    setNumProposals(daoNumberProposals.toString());
+    setNumProposal(daoNumberProposals.toString());
   } catch (error) {
     console.error(error);
   }
@@ -173,7 +173,7 @@ const fetchAllProposals = async () => {
 const voteOnProposal = async (proposalId, _vote) => {
   try {
     const signer = getProviderOrSigner(true);
-    const daoContract = await getDaoContractInstance(signer);
+    const daoContract = getDaoContractInstance(signer);
 
     let vote = _vote === "YAY" ? 0 : 1;
     const txn = await daoContract.voteOnProposal(proposalId, vote);
@@ -243,10 +243,10 @@ const getCryptodevsNFTContractInstance = (providerOrSigner) => {
 };
 
 // piece of code that runs everytime the value of `walletConnected` changes
-  // so when a wallet connects or disconnects
-  // Prompts user to connect wallet if not connected
-  // and then calls helper functions to fetch the
-  // DAO Treasury Balance, User NFT Balance, and Number of Proposals in the DAO
+//   so when a wallet connects or disconnects
+//   Prompts user to connect wallet if not connected
+//   and then calls helper functions to fetch the
+//   DAO Treasury Balance, User NFT Balance, and Number of Proposals in the DAO
 
 useEffect(() => {
   if (!walletConnected) {
@@ -265,7 +265,38 @@ useEffect(() => {
   }
 }, [walletConnected]);
 
+// useEffect(() => {
 
+//   if (!walletConnected) {
+//     Web3ModalRef.current = new Web3Modal ({
+//       network: "sepolia",
+//       providerOptions: {},
+//       disableInjectedProvider: false,
+//     });
+
+//     // Define a new async function `connectAndGetData()`
+//     const connectAndGetData = async () => {
+//       try {
+//         // Connect the wallet and set `walletConnected` state to true
+//         await connectWallet();
+//         setWalletConnected(true);
+
+//         // Call the following functions once the wallet is connected
+//         getDAOTreasuryBalance();
+//         getUserNFTBalance();
+//         getNumProposalsInDAO();
+//         getDAOOwner();
+
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+
+//     // Call connectAndGetData to connect the wallet and fetch data
+//     connectAndGetData();
+//   }
+
+// }, [walletConnected]);
 
 
 useEffect(() => {
